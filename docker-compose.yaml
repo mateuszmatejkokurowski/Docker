@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  frontend:
+    image: nginx:latest
+    ports:
+      - "8080:8080"                                  #port allocation host:container
+    depends_on:                                      #starts before backend
+      - backend
+    volumes:                                         #path host machine : path container
+      - ./frontend:/usr/share/nginx/html
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: mysql                          #database name
+      MYSQL_ROOT_PASSWORD: asd123                    #database password
+    volumes:
+      - ./mysql:/var/lib/mysql                       #database path in the container
+  backend:
+    build:
+      context: backend                               #path to backend
+      dockerfile: Dockerfile                         #name of the Dockerfile
+    ports:
+      - "8000:8000"                                  #port allocation host machine : container
+    depends_on:                                      #starts before db
+      - db
